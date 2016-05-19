@@ -6,7 +6,7 @@ import numpy as np
 
 rowData = []
 
-with open('/Users/forrest/Hanhua/structdata.csv') as f:
+with open('/Users/forrest/Hanhua/HR.csv') as f:
 	for line in f:
 		temp = line.strip().split(',')
 		rowData.append(temp)
@@ -32,6 +32,9 @@ def changeDataStructure(rowData, beigin = 3):
     newRows = (row_length -1 )* repeatTimes
 
     #新的表头
+    oldRowHead = rowData[0,:beigin-1]
+    add = np.array(['valueType', 'value'])
+    newRowHead = np.hstack([oldRowHead, add])
 
     #将repeatArea重复N次
     newRepeatArea = np.tile(repeatArea, (repeatTimes, 1))
@@ -41,28 +44,27 @@ def changeDataStructure(rowData, beigin = 3):
 
     #将ValueArea进行合并，并转置
     temp = np.array([])
-    for i in range(3):
+    for i in range(repeatTimes):
         if i==0:
             newValueArea = valueArea[:,i]
         else:
             newValueArea = np.hstack([newValueArea, valueArea[:,i]])
     newValueArea = newValueArea.reshape(newRows, 1)
     
- #   newValueArea = newValueArea.reshape(, 1)
-    
-    #生成最终的数列
-    temp4 = np.hstack([newRepeatArea, newValueType, newValueArea])
-#    result = np.vstack([newRowHead, temp4])
-    
-#    return newRepeatArea.shape, newValueType.shape, newValueArea.shape
-    return temp4
+    #生成结果
+    tempResult = np.hstack([newRepeatArea, newValueType, newValueArea])
+    result = np.vstack([newRowHead, tempResult])  #加上表头
+    return result
+     
+ #   return result
 
-#with open('structdata.txt')
-#print(struct(t).shape)
-print(changeDataStructure(t))
+changeResult = changeDataStructure(t,2)
+print(changeResult)
 
-
-
-
-
-	
+r = open('/Users/forrest/Hanhua/resultHR.txt', 'w')
+for line in changeResult:
+    for item in line:
+        r.write(item,)
+        r.write(',')
+    r.write('\r')
+r.close
